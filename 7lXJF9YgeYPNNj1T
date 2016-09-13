@@ -1,0 +1,169 @@
+window.__adl__onload_lf_7lXJF9YgeYPNNj1T = function __adl__onload_lf_7lXJF9YgeYPNNj1T(hash) {
+	var $lf_container = document.querySelector("[data-offers='" + hash + "']");
+	var confCSS = {"BS":false};
+	var confJS = {"jQ":false,"jQUI":false,"BS":false};
+	offerList = [{"id":"10346","name":"Get the emoji pack for WhatsApp!","image":"","description":"LLM - Emoji","stars":"\/\/www.adludum.com\/_img\/stars\/10.png"},{"id":"10495","name":"Win a brand new iPhone 6S!","image":"","description":"MOG - iPhone 6S","stars":"\/\/www.adludum.com\/_img\/stars\/10.png"},{"id":"10494","name":"Play exciting and fun new games!","image":"","description":"MOA - Games","stars":"\/\/www.adludum.com\/_img\/stars\/10.png"}];
+	var ludyfeed_html = '##OFFERS##';
+	var ludyfeed_css = '';
+	var ludyfeed_js = '';
+	var ludyfeed_offer_html = '<a href="##LINK##" target="_blank">##NAME##</a>';
+	var offer_html = '';
+	var offerURL = '//www.ludyluda.com/go.php?t=lf&tid=2100&sid=&oid=';
+	oid_array = [];
+
+	if (!$lf_container) { return false; }
+
+	check_credit_lf(hash);
+	check = setInterval(function() {
+		check_credit_lf(hash);
+	}, 60000);
+	
+	var loadCSS = function (path) 
+	{
+		var $l = document.createElement('link');
+		$l.type = 'text/css';
+		$l.rel = 'stylesheet';
+		$l.href = path;
+		document.head.appendChild($l);
+	}
+
+	var loadJS = function (path, callback)
+	{
+		var $s = document.createElement("script");
+		$s.type = "text/javascript";
+		$s.src = path;
+		callback && ($s.addEventListener("load", callback));
+		document.head.appendChild($s);
+	};
+
+	var run = function()
+	{
+		if (confJS.jQ && !("jQuery" in window))
+		{
+			return loadJS("https://code.jquery.com/jquery-1.12.0.min.js", run); 
+		}
+
+		if (confJS.jQUI && !("ui" in jQuery))
+		{
+			return loadJS("https://code.jquery.com/ui/1.11.4/jquery-ui.min.js", run); 
+		}
+
+		if (confJS.BS && !(typeof $().modal == 'function'))
+		{
+			return loadJS("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", run);
+		}
+
+		if (confCSS.BS)
+		{
+			loadCSS('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
+		}
+
+		if (ludyfeed_css !== '')
+		{
+			var $ludyfeed_css = document.createElement('style');
+			$ludyfeed_css.type = 'text/css';
+			$ludyfeed_css.innerHTML = ludyfeed_css;
+			document.body.appendChild($ludyfeed_css);
+		}
+
+		if (Object.keys(offerList).length == 0)
+		{
+			$lf_container.innerHTML += '';
+		}
+		else
+		{
+			offerList.forEach(function(offer) {
+				offer_html += ludyfeed_offer_html.stri_replace(['##LINK##', '##URL##', '##NAME##', '##IMAGE##', '##DESC##', '##STARS##', '##OID##'], [offerURL + offer.id, offerURL + offer.id, offer['name'], offer['image'], offer['description'], offer['stars'], offer.id]);
+				oid_array.push(offer.id);
+			});
+			$lf_container.innerHTML += ludyfeed_html.stri_replace(['##OFFERS##'], [offer_html]);
+			imprCountLF(hash);
+		}
+
+		if (ludyfeed_js !== '')
+		{
+			var $ludyfeed_js = document.createElement('script');
+			$ludyfeed_js.type = 'text/javascript';
+			$ludyfeed_js.innerHTML = ludyfeed_js;
+			document.body.appendChild($ludyfeed_js);
+		}
+	}
+
+	run();
+	return true;	
+};
+
+(function(hash){
+	var timer = 0;
+
+	function load()
+	{
+	    if (document.readyState==='complete' || document.readyState === 'interactive')
+	    {
+	        clearInterval(timer);
+	        __adl__onload_lf_7lXJF9YgeYPNNj1T(hash);
+	    }
+	}
+	timer = setInterval(load, 200);
+})('7lXJF9YgeYPNNj1T');
+
+
+if (typeof check_credit_lf === 'undefined')
+{
+	function check_credit_lf(hash) {
+		var r = new XMLHttpRequest();
+
+		r.open("POST", "https://www.adludum.com/apis/creditcheck.php", true);
+		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		r.onreadystatechange = function () {
+			if (r.readyState != 4 || r.status != 200) return true;
+
+			var response = JSON.parse(r.responseText);
+
+			if (response['credited'] == true)
+			{
+				if (response['finishing_action'] == 'redirect_url')
+				{
+					window.location = response['redirect_url'];
+				}
+				else if (response['finishing_action'] == 'show_text')
+				{
+					console.log('Not yet');
+				}
+				else if (response['finishing_action'] == 'custom_func')
+				{
+					eval(response['custom_func']);
+				}
+				
+				clearInterval(check);
+			}
+			else if (response['credits'] > 0)
+			{
+				console.log('Not enough convs');
+			}
+		};
+
+		r.send('t=lf&h=' + hash);
+	}
+}
+
+if (typeof imprCountLF === 'undefined')
+{
+	function imprCountLF(hash) {
+		var r = new XMLHttpRequest();
+		r.open("POST", 'https://www.adludum.com/apis/imprcount.php', true);
+		r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		r.send('t=lf&h=' + hash + '&url=' + encodeURIComponent(window.location.href) + '&o=' + oid_array.toString());
+	}
+}
+
+String.prototype.stri_replace = function(find, replace) {
+	var replaceString = this;
+	var regex; 
+	for (var i = 0; i < find.length; i++) {
+    	regex = new RegExp(find[i], "gi");
+    	replaceString = replaceString.replace(regex, replace[i]);
+	}
+	return replaceString;
+}
